@@ -7,7 +7,7 @@ import json
 from openai import OpenAI
 import httpx
 import time
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 # Feature Flag: Google Gemini (via HTTPX fallback)
 # We do not import google.generativeai to prevent Vercel crashes
@@ -330,11 +330,21 @@ async def chat_with_ai(
     task_service: TaskService = Depends(get_task_service),
     user_id: str = Depends(get_current_user_id)
 ):
-    today_iso = datetime.now().isoformat()
-    system_prompt = f"""You are Todo AI for User {user_id}. Manage tasks in English/Urdu.
-    Current Date/Time: {today_iso}
+    # Use IST (India Standard Time = UTC+5:30) for correct local time
+    IST = timezone(timedelta(hours=5, minutes=30))
+    now_ist = datetime.now(IST)
+    today_iso = now_ist.isoformat()
     
-    If the user asks for a relative date (e.g. 'tomorrow', 'next week'), calculate the exact ISO 8601 date based on the Current Date/Time provided above.
+    system_prompt = f"""You are Todo AI for User {user_id}. Manage tasks in English/Urdu/Hindi.
+    Current Date/Time (IST): {today_iso}
+    
+    IMPORTANT TIME RULES:
+    - When user says "remind me in X minutes", calculate: current time + X minutes
+    - For example: If current time is 03:05 AM and user says "remind me in 2 minutes", set due_date to 03:07 AM
+    - Always use the CURRENT time provided above, not some random time
+    - Use ISO 8601 format for dates: YYYY-MM-DDTHH:MM:SS
+    
+    If the user asks for a relative date (e.g. 'tomorrow', 'next week', 'in 5 minutes'), calculate the exact ISO 8601 date based on the Current Date/Time provided above.
     
     tools: add_task, list_tasks, complete_task, delete_task, search_tasks.
     
