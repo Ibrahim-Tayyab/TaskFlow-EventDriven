@@ -1,24 +1,25 @@
 {
   "version": 2,
+  "buildCommand": "cd web-app && npm run build",
+  "outputDirectory": "web-app/.next",
+  "installCommand": "cd web-app && npm install",
+  "framework": "nextjs",
   "builds": [
     {
       "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "web-app/package.json",
-      "use": "@vercel/next"
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "api/index.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "web-app/$1"
     }
-  ]
-
+  ],
+  "env": {
+    "PYTHONPATH": "api"
+  }
 }

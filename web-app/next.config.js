@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone', // Required for Docker deployment
+  // output: 'standalone' is only for Docker, Vercel handles this automatically
   images: {
     unoptimized: true
   },
@@ -13,10 +13,10 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   async rewrites() {
-    // Use INTERNAL_API_URL for server-side requests (Docker network)
-    // For local development, use localhost:8000
-    // For Docker/K8s, set INTERNAL_API_URL=http://todo-backend:8000
-    const apiUrl = process.env.INTERNAL_API_URL || 'http://localhost:8000';
+    // For Vercel: Use NEXT_PUBLIC_API_URL or default to relative /api
+    // For Local: Use localhost:8000
+    // For Docker: Use INTERNAL_API_URL
+    const apiUrl = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     console.log('Rewrite rule: Proxying /api/* to', apiUrl);
     return [
       {

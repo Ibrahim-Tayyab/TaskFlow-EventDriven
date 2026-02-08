@@ -1,53 +1,106 @@
-# Phase 5: Advanced Cloud Deployment & Event-Driven Architecture
+# Phase 5: Event-Driven Architecture with Dapr & RedPanda Cloud
 
-## Goal
-Transform the Todo application into a distributed, cloud-native system using Event-Driven Architecture (EDA).
-This phase introduces advanced features (Recurring Tasks, Reminders) powered by Kafka and Dapr, and prepares for deployment on production Kubernetes (DigitalOcean/GKE/AKS).
+## 👨‍💻 Developer
+**M Ibrahim Tayyab** | [GitHub](https://github.com/Ibrahim-Tayyab) | [Docker Hub](https://hub.docker.com/u/ibuboy)
 
-## Scope
+## 🎯 Goal
+Transform TaskFlow into a production-ready, event-driven microservices architecture using Dapr and RedPanda Cloud Kafka. Containerized with Docker Compose for easy deployment.
 
-### Part A: Advanced Features
+## 📋 Scope
+
+### Part A: Advanced Features ✅
 1.  **Recurring Tasks**: Automate task creation based on schedules (daily, weekly, etc.).
-2.  **Smart Reminders**: Push notifications/emails for due tasks.
+2.  **Smart Reminders**: Push notifications for due tasks.
 3.  **Advanced Organization**:
     -   Priority Levels (High, Medium, Low)
     -   Tags/Categories (Work, Personal, etc.)
     -   Search & Filtering
     -   Sorting
 
-### Part B: Architecture Upgrade
+### Part B: Event-Driven Architecture ✅
 1.  **Dapr Integration**:
-    -   **Pub/Sub**: Abstract Kafka via Dapr sidecar.
-    -   **State Management**: Store conversation/session state.
-    -   **Bindings**: Cron bindings for scheduled checks.
-    -   **Secrets**: Secure credential management.
-2.  **Kafka Implementation**:
-    -   Backbone for event streaming (TaskCreated, TaskDue, etc.).
-    -   Redpanda (Local/Cloud) as the Kafka provider.
+    -   **Pub/Sub**: Abstract Kafka via Dapr sidecar
+    -   **Topics**: task-events, notifications
+    -   **Events**: task.created, task.updated, task.deleted
+2.  **RedPanda Cloud Kafka**:
+    -   Cloud-hosted Kafka service
+    -   SASL authentication
+    -   Automatic topic management
 
-### Part C: Cloud Deployment
-1.  **Containerization**: Optimize Dockerfiles for production.
-2.  **Helm Charts**: Production-grade charts with auto-scaling.
-3.  **CI/CD**: GitHub Actions pipeline.
-4.  **Cluster Deployment**: DigitalOcean Kubernetes (DOKS).
+### Part C: Docker Containerization ✅
+1.  **Docker Compose**: 3 services (frontend, backend, dapr)
+2.  **Docker Hub**: Published images
+    -   `ibuboy/todo-backend:phase5`
+    -   `ibuboy/todo-frontend:phase5`
+3.  **Easy Deployment**: Single command startup
 
-## Technical Stack
--   **Orchestration**: Kubernetes (Minikube / DOKS)
--   **Runtime**: Dapr (Distributed Application Runtime)
--   **Messaging**: Apache Kafka (Redpanda)
--   **Backend**: FastAPI + Python 3.12
--   **Frontend**: Next.js 15
--   **Database**: Neon Serverless PostgreSQL
--   **AI**: OpenAI Agents SDK + MCP
+## 🛠️ Technical Stack
+| Component | Technology |
+|-----------|------------|
+| **Frontend** | Next.js 14, React 18, TailwindCSS |
+| **Backend** | FastAPI, Python 3.11, SQLAlchemy |
+| **AI** | Google Gemini 2.0 Flash |
+| **Event Broker** | Dapr + RedPanda Cloud Kafka |
+| **Database** | Neon PostgreSQL |
+| **Containerization** | Docker, Docker Compose |
 
-## Implementation Roadmap
-spec-driven development will be strictly followed.
+## 🏗️ Architecture
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    TaskFlow Architecture                     │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐ │
+│  │   Next.js   │◄──►│   FastAPI   │◄──►│  Dapr Sidecar   │ │
+│  │  Frontend   │    │   Backend   │    │   (Pub/Sub)     │ │
+│  │  Port:3000  │    │  Port:8000  │    │   Port:3500     │ │
+│  └─────────────┘    └─────────────┘    └────────┬────────┘ │
+│                                                  │          │
+│                                                  ▼          │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐ │
+│  │   Neon      │◄──►│   Google    │    │  RedPanda Cloud │ │
+│  │ PostgreSQL  │    │  Gemini AI  │    │     Kafka       │ │
+│  └─────────────┘    └─────────────┘    └─────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
 
-1.  **Specs Definition**: Define features and architecture. (`specs/phase5/*`)
-2.  **Infrastructure Setup**: Local Dapr & Redpanda setup.
-3.  **Backend Refactoring**: Integrate Dapr Python SDK.
-4.  **Feature Implementation**:
-    -   Recurring Tasks Engine (Consumer)
+## 📁 Specs Structure
+```
+specs/phase5/
+├── overview.md      # This file - Project overview
+├── spec.md          # Technical specification
+├── plan.md          # Implementation plan
+├── tasks.md         # Task breakdown
+├── architecture/    # Architecture details
+├── deployment/      # Deployment guides
+└── features/        # Feature specifications
+```
+
+## ✅ Implementation Status
+| Task | Status |
+|------|--------|
+| RedPanda Cloud Setup | ✅ Complete |
+| Dapr Configuration | ✅ Complete |
+| Docker Compose | ✅ Complete |
+| Event Publishing | ✅ Complete |
+| Docker Hub Images | ✅ Complete |
+| Demo Video | ⏳ Pending |
+| Submission | ⏳ Pending |
+
+## 🚀 Quick Start
+```powershell
+# Clone and run
+git clone https://github.com/Ibrahim-Tayyab/TaskFlow-EventDriven.git
+cd TaskFlow-EventDriven
+docker-compose up -d
+
+# Open app
+start http://localhost:3000
+```
+
+## 🔗 Links
+- **GitHub**: https://github.com/Ibrahim-Tayyab
+- **Docker Hub**: https://hub.docker.com/u/ibuboy
+- **App URL**: http://localhost:3000
     -   Notification Service (Consumer)
     -   Search/Filter API
 5.  **Deployment**: Kubernetes manifests & Helm charts.
