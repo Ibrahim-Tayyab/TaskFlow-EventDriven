@@ -1,0 +1,29 @@
+fastapi
+uvicorn[standard]
+# Core
+fastapi
+pydantic
+pydantic-settings
+sqlmodel
+uvicorn
+python-dotenv
+alembic
+
+# Database
+psycopg2-binary
+
+# Auth & Security
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+bcrypt
+email-validator
+
+# AI & Tools
+openai
+requests
+httpx
+
+# Removed to prevent Vercel crashes
+# google-generativeai
+# mcp

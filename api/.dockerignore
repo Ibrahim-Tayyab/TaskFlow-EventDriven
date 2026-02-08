@@ -1,0 +1,57 @@
+# ============================================
+# Backend Docker Ignore
+# Phase V: FastAPI Production Build
+# ============================================
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+
+# Version control
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Environment files (passed via docker-compose)
+.env
+.env.local
+.env*.local
+
+# Logs
+*.log
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov/
+tests/
+test_*.py
+*_test.py
+
+# IDE
+.idea
+.vscode
+
+# Migration scripts (not needed in production)
+migrate_*.py
+verify_*.py
+debug_*.py
+clear_database.py
+append_*.py
+
+# SQLite (development only)
+*.db
+*.sqlite3
+requirements_sqlite.txt

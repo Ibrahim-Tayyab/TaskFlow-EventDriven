@@ -1,0 +1,94 @@
+# Default values for todo-app Helm chart
+
+# Global settings
+global:
+  environment: development
+
+# Frontend configuration
+frontend:
+  name: todo-frontend
+  replicaCount: 2
+  image:
+    repository: todo-frontend
+    tag: fixed3
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  env:
+    - name: INTERNAL_API_URL
+      value: "http://todo-backend:8000"
+    - name: NODE_ENV
+      value: "production"
+
+# Backend configuration
+backend:
+  name: todo-backend
+  replicaCount: 2
+  image:
+    repository: todo-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  env:
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: todo-secrets
+          key: DATABASE_URL
+    - name: OPENROUTER_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: todo-secrets
+          key: OPENROUTER_API_KEY
+    - name: GOOGLE_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: todo-secrets
+          key: GOOGLE_API_KEY
+    - name: BETTER_AUTH_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: todo-secrets
+          key: BETTER_AUTH_SECRET
+    - name: BETTER_AUTH_URL
+      value: "http://localhost:3000"
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: todo-app.local
+      paths:
+        - path: /
+          pathType: Prefix
+          backend: frontend
+        - path: /api
+          pathType: Prefix
+          backend: backend
+
+# Secrets (will be created separately)
+secrets:
+  name: todo-secrets
+  create: false

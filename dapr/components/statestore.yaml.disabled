@@ -1,0 +1,17 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: statestore
+spec:
+  type: state.postgresql
+  version: v1
+  metadata:
+  - name: connectionString
+    # Local development: Use direct connection string
+    # For K8s deployment: Use secretKeyRef (see commented section below)
+    value: "host=ep-dark-surf-aesp74dc-pooler.c-2.us-east-2.aws.neon.tech port=5432 user=neondb_owner password=npg_S12VpPEGnBkA dbname=neondb sslmode=require"
+  # For Kubernetes deployment, uncomment below and remove 'value' above:
+  # secretKeyRef:
+  #   name: db-secrets
+  #   key: DATABASE_URL
+

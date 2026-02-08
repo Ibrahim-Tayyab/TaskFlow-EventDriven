@@ -1,0 +1,26 @@
+Metadata-Version: 2.4
+Name: todo-hackathon
+Version: 0.1.0
+Summary: The Evolution of Todo (Hackathon II) - Multi-app project
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+
+# Todo Console App
+
+A simple CLI-based todo application with in-memory storage.
+
+## Features
+- Add new tasks
+- View all tasks
+- Update task descriptions
+- Delete tasks
+- Mark tasks as complete
+
+## Setup
+1. Ensure Python 3.13+ is installed
+2. Install UV package manager: `pip install uv`
+3. Install dependencies: `uv sync`
+4. Run the application: `uv run python src/main.py`
+
+## Usage
+Run the application with `uv run python src/main.py` and follow the menu prompts.

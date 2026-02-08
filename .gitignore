@@ -1,0 +1,117 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+yarn.lock
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+*.egg-info/
+todo_hackathon.egg-info/
+
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.Python
+build/
+dist/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+.installed.cfg
+*.egg
+MANIFEST
+pyproject.toml
+uv.lock
+
+# IDE and Editor configs
+.idea/
+.pycharm/
+.vscode/
+*.swp
+*.swo
+.ds_store
+thumbs.db
+
+# Environment variables (CRITICAL: Do not commit secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Next.js build output
+.next/
+out/
+build/
+.vercel/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testing and coverage
+coverage/
+.tox/
+.nox/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Databases (local SQLite only)
+*.sqlite
+*.sqlite3
+postgres_data/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Backup/Workaround folders (not needed in production)
+backend_workaround/
+history/
+
+# Debug/Test files (not needed in repo)
+debug_*.py
+test_*.py
+verify_*.py
+*_test.py
+test_result.txt
+verification_result*.txt
+
+# Phase-specific temp files
+PHASE4_*.md
+PHASE5_*.md
+phase4-summary.png
+todo-frontend.tar
+
+# Docker build cache (images are on Docker Hub)
+*.tar
+
+# Keep these important files:
+# - docker-compose.yml ✅
+# - Dockerfile (in api/) ✅
+# - dapr/components/ ✅
+# - k8s/ ✅ (Kubernetes configs)
+# - helm/ ✅ (Helm charts)
+# - specs/ ✅ (Project specifications)
+# - api/ ✅ (Backend code)
+# - web-app/ ✅ (Frontend code)
+# - README.md ✅
+# - requirements.txt ✅

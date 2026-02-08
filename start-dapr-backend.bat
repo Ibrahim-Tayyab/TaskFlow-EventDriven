@@ -1,0 +1,3 @@
+@echo off
+echo Starting Backend with Dapr...
+C:\dapr\dapr.exe run --app-id todo-backend --dapr-http-port 3500 --components-path ./dapr/components --placement-host-address localhost:50005 -- python -m uvicorn api.index:app --reload --port 8000

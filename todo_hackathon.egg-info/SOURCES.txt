@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+apps/console_app/src/__init__.py
+apps/console_app/src/main.py
+apps/console_app/src/cli/__init__.py
+apps/console_app/src/cli/cli_handler.py
+apps/console_app/src/models/__init__.py
+apps/console_app/src/models/task.py
+apps/console_app/src/repositories/__init__.py
+apps/console_app/src/repositories/task_repository.py
+apps/console_app/src/services/__init__.py
+apps/console_app/src/services/task_service.py
+todo_hackathon.egg-info/PKG-INFO
+todo_hackathon.egg-info/SOURCES.txt
+todo_hackathon.egg-info/dependency_links.txt
+todo_hackathon.egg-info/entry_points.txt
+todo_hackathon.egg-info/top_level.txt

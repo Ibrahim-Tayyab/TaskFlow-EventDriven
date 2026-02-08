@@ -1,0 +1,63 @@
+# ============================================
+# Dapr Pub/Sub Component - RedPanda Cloud
+# Phase V: Production-Ready Event-Driven Architecture
+# ============================================
+# Verified Working: February 8, 2026
+# ============================================
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: todo-pubsub
+spec:
+  type: pubsub.kafka
+  version: v1
+  initTimeout: 180s
+  metadata:
+  # RedPanda Cloud Broker
+  - name: brokers
+    value: "d63t1k3t489913vp0dvg.any.us-east-1.mpx.prd.cloud.redpanda.com:9092"
+  # Consumer settings
+  - name: consumerGroup
+    value: "todo-group"
+  - name: clientID
+    value: "todo-client"
+  # Authentication - SASL Password (REQUIRED for RedPanda Cloud)
+  - name: authType
+    value: "password"
+  - name: saslUsername
+    value: "todo-user"
+  - name: saslPassword
+    value: "todo-user"
+  # CRITICAL: Dapr uses "SHA-256" NOT "SCRAM-SHA-256"
+  - name: saslMechanism
+    value: "SHA-256"
+  # TLS Settings - MUST be enabled for RedPanda Cloud
+  - name: disableTls
+    value: "false"
+  # Skip certificate verification (required for cloud connection)
+  - name: skipVerify
+    value: "true"
+  # Required: Enable TLS explicitly
+  - name: enableTls
+    value: "true"
+  # Kafka version compatibility
+  - name: version
+    value: "3.4.0"
+  # Connection timeouts (increased for cloud latency)
+  - name: consumeRetryInterval
+    value: "1000ms"
+  - name: heartbeatInterval
+    value: "3s"
+  - name: sessionTimeout
+    value: "45s"
+  - name: maxMessageBytes
+    value: "1048576"
+  - name: initialOffset
+    value: "newest"
+  # Additional connection settings
+  - name: dialTimeout
+    value: "30s"
+  - name: readTimeout
+    value: "30s"
+  - name: writeTimeout
+    value: "30s"

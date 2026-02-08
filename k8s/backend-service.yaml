@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-backend
+  labels:
+    app: todo-backend
+    tier: backend
+spec:
+  type: NodePort
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http
+    nodePort: 30080
+  selector:
+    app: todo-backend

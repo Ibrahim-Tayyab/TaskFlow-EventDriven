@@ -1,0 +1,10 @@
+{
+    "name": "todo-hackathon-root",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "cd web-app && npm install && npm run build"
+    },
+    "engines": {
+        "node": "24.x"  
+    }
+}

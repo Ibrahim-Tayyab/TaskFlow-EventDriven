@@ -1,0 +1,141 @@
+# ============================================
+# Docker Compose - Production Ready
+# Phase V: Cloud Deployment with Dapr + Kafka
+# Docker Hub: ibuboy/todo-backend:phase5
+#             ibuboy/todo-frontend:phase5
+# ============================================
+#
+# Usage:
+#   docker-compose up -d              # Start all services
+#   docker-compose logs -f            # View logs
+#   docker-compose down               # Stop all services
+#   docker-compose build --no-cache   # Rebuild images
+#
+# RedPanda Cloud Connection:
+#   Bootstrap: d63t1k3t489913vp0dvg.any.us-east-1.mpx.prd.cloud.redpanda.com:9092
+#   SASL: SCRAM-SHA-256 (Dapr uses SHA-256)
+#   Topics: task-events, notifications, reminders
+#
+# Environment Variables Required (.env file):
+#   - DATABASE_URL: Neon PostgreSQL connection string
+#   - GOOGLE_API_KEY: Gemini API key
+#   - BETTER_AUTH_SECRET: Authentication secret
+#   - REDPANDA_SASL_USERNAME: RedPanda username (default: todo-user)
+#   - REDPANDA_SASL_PASSWORD: RedPanda password (default: todo-user)
+# ============================================
+
+version: '3.8'
+
+services:
+  # ============================================
+  # Backend API Service
+  # FastAPI + SQLModel + Google Gemini AI
+  # ============================================
+  todo-backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: ibuboy/todo-backend:phase5
+    container_name: todo-backend
+    ports:
+      - "8000:8000"
+    environment:
+      # Database Configuration
+      - DATABASE_URL=${DATABASE_URL}
+      # AI Configuration
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      # Authentication
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://localhost:3000}
+      # Python Settings
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      # Dapr Configuration
+      - DAPR_HTTP_PORT=3500
+      - DAPR_GRPC_PORT=50001
+    networks:
+      - todo-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # ============================================
+  # Backend Dapr Sidecar
+  # Connects to RedPanda Cloud for Pub/Sub
+  # ============================================
+  todo-backend-dapr:
+    image: "daprio/daprd:1.16.5"
+    container_name: todo-backend-dapr
+    command:
+      - "./daprd"
+      - "-app-id"
+      - "todo-backend"
+      - "-app-port"
+      - "8000"
+      - "-dapr-http-port"
+      - "3500"
+      - "-dapr-grpc-port"
+      - "50001"
+      - "-components-path"
+      - "/components"
+      - "-log-level"
+      - "info"
+      - "-enable-mtls=false"
+    environment:
+      # RedPanda Cloud SASL Credentials (passed to Dapr)
+      - REDPANDA_BOOTSTRAP_SERVER=${REDPANDA_BOOTSTRAP_SERVER:-d63t1k3t489913vp0dvg.any.us-east-1.mpx.prd.cloud.redpanda.com:9092}
+      - REDPANDA_SASL_USERNAME=${REDPANDA_SASL_USERNAME:-todo-user}
+      - REDPANDA_SASL_PASSWORD=${REDPANDA_SASL_PASSWORD:-todo-user}
+    volumes:
+      - ./dapr/components:/components:ro
+    network_mode: "service:todo-backend"
+    depends_on:
+      todo-backend:
+        condition: service_started
+    restart: unless-stopped
+
+  # ============================================
+  # Frontend Service (Next.js Standalone)
+  # Proxies /api/* to backend via rewrites
+  # ============================================
+  todo-frontend:
+    build:
+      context: ./web-app
+      dockerfile: Dockerfile
+    image: ibuboy/todo-frontend:phase5
+    container_name: todo-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://todo-backend:8000
+      - INTERNAL_API_URL=http://todo-backend:8000
+      # Authentication
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=http://localhost:3000
+      - NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
+    networks:
+      - todo-network
+    depends_on:
+      todo-backend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+# ============================================
+# Networks
+# ============================================
+networks:
+  todo-network:
+    driver: bridge
+    name: todo-hackathon-network

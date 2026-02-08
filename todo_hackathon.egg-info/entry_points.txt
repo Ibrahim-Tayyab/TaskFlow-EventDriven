@@ -1,0 +1,2 @@
+[console_scripts]
+todo-console = apps.console_app.src.main:main

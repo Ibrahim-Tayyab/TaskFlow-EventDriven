@@ -1,0 +1,12 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: reminder-cron
+spec:
+  type: bindings.cron
+  version: v1
+  metadata:
+  - name: schedule
+    value: "@every 10s" # Ultra-fast: Check every 10 seconds for exact timing
+  - name: route
+    value: "/api/cron/reminder-cron"
